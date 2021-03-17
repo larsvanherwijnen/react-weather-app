@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
@@ -6,7 +6,6 @@ const api = {
     key: "d4a2867ffbc264f4e4b58f624c1dfb0d",
     base: "http://api.openweathermap.org/data/2.5/"
 }
-
 
 const dateBuilder = (d) => {
     let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -29,6 +28,7 @@ const currentTime = () => {
 }
 
 
+
 class App extends React.Component {
 
     constructor(props) {
@@ -38,34 +38,64 @@ class App extends React.Component {
             isLoaded: false,
             items: []
         };
+        this.state = {value:''}
+        this.handleChange = this.handleChange.bind(this);
     }
 
-    componentDidMount() {
-        const location = '';
-
-        fetch(`${api.base}weather?q=${this.location}&units=metric&appid=${api.key}`)
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    console.log(result)
-                    this.setState({
-                        main: result.main,
-                        city: result.name,
-                        country: result.sys.country,
-                        temp: result.main.temp,
-                        weather: result.weather[0].main
-                    });
-
-                },
-                (error) => {
-                    this.setState({
-                        isLoaded: true,
-                        error
-                    });
-                }
-            )
+    handleChange(e) {
+        this.setState({ value: e.target.value });
+        console.log(this.state.value)
     }
 
+    fetchAPI = event => {
+        if(event.key === 'Enter'){
+            fetch(`${api.base}weather?q=${(this.state.value !== "") ? ( this.state.value) : ( 'amsterdam')}&units=metric&appid=${api.key}`)
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        console.log(result)
+                        this.setState({
+                            main: result.main,
+                            city: result.name,
+                            country: result.sys.country,
+                            temp: result.main.temp,
+                            weather: result.weather[0].main
+                        });
+
+                    },
+                    (error) => {
+                        this.setState({
+                            isLoaded: true,
+                            error
+                        });
+                    }
+                )
+        }
+    }
+    // fetchAPI() {
+    //
+    //     fetch(`${api.base}weather?q=${(this.state.value !== "") ? ( this.state.value) : ( 'amsterdam')} || ${typeof this.state.sys.country != "undefined" ? ( 'amsterdam') : ( this.state.value)} &units=metric&appid=${api.key}`)
+    //         .then(res => res.json())
+    //         .then(
+    //             (result) => {
+    //                 console.log(result)
+    //                 this.setState({
+    //                     main: result.main,
+    //                     city: result.name,
+    //                     country: result.sys.country,
+    //                     temp: result.main.temp,
+    //                     weather: result.weather[0].main
+    //                 });
+    //
+    //             },
+    //             (error) => {
+    //                 this.setState({
+    //                     isLoaded: true,
+    //                     error
+    //                 });
+    //             }
+    //         )
+    // }
     render() {
         const data = this.state;
         return (
@@ -76,14 +106,16 @@ class App extends React.Component {
                                aria-describedby="emailHelp"
                                placeholder="Locatie bijv. Madrid"
                                name="location"
-                               value={this.state.location}
-                               onKeyPress={e => this.location = e.target.value}
+                               value={this.state.value}
+                               onChange={this.handleChange}
+                               onKeyPress={this.fetchAPI}
+
                         />
                     </div>
                     {(typeof data.main != "undefined") ? (
                         <div>
                             <div className="row d-flex justify-content-center px-3">
-                                <div className="card card-default">
+                                <div className="card card-rain">
                                     <h2 className="ml-auto mr-4 mt-3 mb-0">{data.city}</h2>
                                     <p className="ml-auto mr-4 mb-0 med-font">{data.weather}</p>
                                     <h1 className="ml-auto mr-4 large-font">{Math.round(data.temp)}°c</h1>
@@ -93,7 +125,19 @@ class App extends React.Component {
                                 </div>
                             </div>
                         </div>
-                    ) : ('')}
+                    ) : (
+                        <div>
+                        <div className="row d-flex justify-content-center px-3">
+                            <div className="card card-default">
+                                <h2 className="ml-auto mr-4 mt-3 mb-0">Geen locatie</h2>
+                                <p className="ml-auto mr-4 mb-0 med-font">-----</p>
+                                <h1 className="ml-auto mr-4 large-font">--°c</h1>
+                                <p className="time-font mb-0 ml-4 mt-auto">{currentTime()}<span className="sm-font">{currentTime() >= 12 ? 'am' : 'pm'}</span></p>
+                                <p className="ml-4 mb-4">{dateBuilder(new Date())}</p>
+                            </div>
+                        </div>
+                    </div>
+                    )}
                 </div>
             </>
         )

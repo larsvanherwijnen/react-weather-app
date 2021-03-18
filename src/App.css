@@ -30,17 +30,28 @@ body {
     height: 125px;
     border-radius: 20px;
     box-shadow: 0px 8px 16px 4px #9E9E9E;
+    margin-top: 15px;
+    margin-bottom: 1px
 }
 
 .card-default{
-    background-image: url("images/sun.jpg");}
+    background-image: url("images/sun.jpg");
+}
 .card-rain{
     background-image: url("images/rain.png");
 }
 .card-snow{
     background-image: url("images/snow.jpg");
 }
-
+.card-clouds{
+    background-image: url("images/clouds.jpg");
+}
+.card-fog{
+    background-image: url("images/fog.jpg");
+}
+.card-unknown{
+    background-image: url("https://via.placeholder.com/4000x4000.jpeg?text=unknown location");
+}
 
 .time-font {
     font-size: 50px

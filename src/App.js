@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
@@ -49,7 +49,7 @@ class App extends React.Component {
 
     fetchAPI = event => {
         if(event.key === 'Enter'){
-            fetch(`${api.base}weather?q=${(this.state.value !== "") ? ( this.state.value) : ( 'amsterdam')}&units=metric&appid=${api.key}`)
+            fetch(`${api.base}weather?q=${(this.state.value !== "") ? ( this.state.value) : ('amsterdam')}&units=metric&appid=${api.key}`)
                 .then(res => res.json())
                 .then(
                     (result) => {
@@ -72,30 +72,28 @@ class App extends React.Component {
                 )
         }
     }
-    // fetchAPI() {
-    //
-    //     fetch(`${api.base}weather?q=${(this.state.value !== "") ? ( this.state.value) : ( 'amsterdam')} || ${typeof this.state.sys.country != "undefined" ? ( 'amsterdam') : ( this.state.value)} &units=metric&appid=${api.key}`)
-    //         .then(res => res.json())
-    //         .then(
-    //             (result) => {
-    //                 console.log(result)
-    //                 this.setState({
-    //                     main: result.main,
-    //                     city: result.name,
-    //                     country: result.sys.country,
-    //                     temp: result.main.temp,
-    //                     weather: result.weather[0].main
-    //                 });
-    //
-    //             },
-    //             (error) => {
-    //                 this.setState({
-    //                     isLoaded: true,
-    //                     error
-    //                 });
-    //             }
-    //         )
-    // }
+
+    renderSwitch(weather) {
+        switch(weather) {
+            case 'Rain':
+                return 'card card-rain';
+            case 'Drizzle':
+                return 'card card-rain';
+            case 'Clouds':
+                return 'card card-clouds';
+            case 'Snow':
+                return 'card card-snow';
+            case 'Clear':
+                return 'card card-default';
+            case 'Fog':
+                return 'card card-fog'
+            default:
+                return 'card card-unknown';
+        }
+    }
+
+
+
     render() {
         const data = this.state;
         return (
@@ -115,7 +113,7 @@ class App extends React.Component {
                     {(typeof data.main != "undefined") ? (
                         <div>
                             <div className="row d-flex justify-content-center px-3">
-                                <div className="card card-rain">
+                                <div className={this.renderSwitch(data.weather)}>
                                     <h2 className="ml-auto mr-4 mt-3 mb-0">{data.city}</h2>
                                     <p className="ml-auto mr-4 mb-0 med-font">{data.weather}</p>
                                     <h1 className="ml-auto mr-4 large-font">{Math.round(data.temp)}°c</h1>
@@ -127,16 +125,16 @@ class App extends React.Component {
                         </div>
                     ) : (
                         <div>
-                        <div className="row d-flex justify-content-center px-3">
-                            <div className="card card-default">
-                                <h2 className="ml-auto mr-4 mt-3 mb-0">Geen locatie</h2>
-                                <p className="ml-auto mr-4 mb-0 med-font">-----</p>
-                                <h1 className="ml-auto mr-4 large-font">--°c</h1>
-                                <p className="time-font mb-0 ml-4 mt-auto">{currentTime()}<span className="sm-font">{currentTime() >= 12 ? 'am' : 'pm'}</span></p>
-                                <p className="ml-4 mb-4">{dateBuilder(new Date())}</p>
+                            <div className="row d-flex justify-content-center px-3">
+                                <div className={this.renderSwitch(data.weather)}>
+                                    <h2 className="ml-auto mr-4 mt-3 mb-0">Geen locatie</h2>
+                                    <p className="ml-auto mr-4 mb-0 med-font">-----</p>
+                                    <h1 className="ml-auto mr-4 large-font">--°c</h1>
+                                    <p className="time-font mb-0 ml-4 mt-auto">{currentTime()}<span className="sm-font">{currentTime() >= 12 ? 'am' : 'pm'}</span></p>
+                                    <p className="ml-4 mb-4">{dateBuilder(new Date())}</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
                     )}
                 </div>
             </>

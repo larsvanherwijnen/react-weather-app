@@ -110,7 +110,7 @@ class App extends React.Component {
 
                         />
                     </div>
-                    {(typeof data.main != "undefined") ? (
+                    {(typeof data.main != "undefined" || typeof data.country != "undefined"  ) ? (
                         <div>
                             <div className="row d-flex justify-content-center px-3">
                                 <div className={this.renderSwitch(data.weather)}>
